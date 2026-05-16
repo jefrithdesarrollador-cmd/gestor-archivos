@@ -32,22 +32,29 @@ def mostrar_reporte(estadisticas):
         print(f"\nArchivos en 'otros': {len(estadisticas['otros'])}")
         for o in estadisticas["otros"]:
                 print(f"  - {o}")
+        print(f"\nErrores: {len(estadisticas['errores'])}")
+        for e in estadisticas["errores"]:
+            print(f"  - {e}")
         print("=========================")
 
 def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
     with open(ruta_log, "a", encoding="utf-8") as log:
         for archivo in archivos:
-            nombre_final, categoria = mover_archivo(archivo, ruta_salidas, categorias)
-            estadisticas["total"] += 1
-            estadisticas["por_categoria"][categoria] = estadisticas["por_categoria"].get(categoria, 0) + 1
-            nombre_original = os.path.basename(archivo)
-            if nombre_original != nombre_final:
-                estadisticas["duplicados"].append(nombre_original)
-            if categoria == "otros":
-                estadisticas["otros"].append(nombre_final)
-            linea = f"{datetime.now()} | {archivo} → {categoria} -> {nombre_final} \n"
-            print(linea.strip())
-            log.write(linea)
+            try:
+                nombre_final, categoria = mover_archivo(archivo, ruta_salidas, categorias)
+                estadisticas["total"] += 1
+                estadisticas["por_categoria"][categoria] = estadisticas["por_categoria"].get(categoria, 0) + 1
+                nombre_original = os.path.basename(archivo)
+                if nombre_original != nombre_final:
+                    estadisticas["duplicados"].append(nombre_original)
+                if categoria == "otros":
+                    estadisticas["otros"].append(nombre_final)
+                linea = f"{datetime.now()} | {archivo} → {categoria} -> {nombre_final} \n"
+                print(linea.strip())
+                log.write(linea)
+            except Exception as e:
+                estadisticas["errores"].append(f"{archivo}: {e}")
+                print(f"[ERROR] {archivo}: {e}")
     print("\n Listo.")
     mostrar_reporte(estadisticas)
 
