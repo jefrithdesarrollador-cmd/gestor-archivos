@@ -1,0 +1,10 @@
+{
+    "categorias": {
+        "imagenes": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
+        "videos": [".mp4", ".avi", ".mov", ".mkv"],
+        "documentos": [".pdf", ".docx", ".doc", ".txt", ".xlsx"],
+        "audio": [".mp3", ".wav", ".aac", ".lrc"],
+        "otros": [],
+        "libros": [".epub"]
+    }
+}
