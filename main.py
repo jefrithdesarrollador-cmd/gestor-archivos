@@ -11,7 +11,15 @@ ruta_salidas = "salidas"
 ruta_log = "logs/registro.txt"
 
 archivos = listar_archivos(ruta_entradas)
-categorias = cargar_categorias()
+try:
+    categorias = cargar_categorias()
+except FileNotFoundError:
+    print("Error: no se encontro config.json")
+    sys.exit(1)
+except Exception as e:
+    print(f"Error al leer config.json: {e}")
+    sys.exit(1)
+
 estadisticas = {
     "total": 0,
     "por_categoria": {},
