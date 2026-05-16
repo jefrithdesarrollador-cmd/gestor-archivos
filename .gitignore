@@ -3,3 +3,4 @@ salidas/
 __pycache__/
 *.pyc
 logs/
+modulos/__pycache__/
