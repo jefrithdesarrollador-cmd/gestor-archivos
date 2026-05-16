@@ -11,8 +11,12 @@ modo_simulacion = "--simular" in sys.argv
 ruta_entradas = "entradas"
 ruta_salidas = "salidas"
 ruta_log = "logs/registro.txt"
+min_mb = 0
+if "--min-mb" in sys.argv:
+    indice = sys.argv.index("--min-mb")
+    min_mb = float(sys.argv[indice + 1])
 
-archivos = listar_archivos(ruta_entradas)
+archivos = listar_archivos(ruta_entradas,min_mb)
 try:
     categorias = cargar_categorias()
 except FileNotFoundError:
