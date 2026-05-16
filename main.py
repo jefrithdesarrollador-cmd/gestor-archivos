@@ -4,7 +4,9 @@ from datetime import datetime
 import os
 import sys
 from modulos.organizador import obtener_categoria
+import shutil
 
+modo_deshacer = "--deshacer" in sys.argv
 modo_simulacion = "--simular" in sys.argv
 ruta_entradas = "entradas"
 ruta_salidas = "salidas"
@@ -47,6 +49,7 @@ def mostrar_reporte(estadisticas):
 
 def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
     with open(ruta_log, "a", encoding="utf-8") as log:
+        log.write(f"=== SESION {datetime.now()} ===\n")
         for archivo in archivos:
             try:
                 nombre_final, categoria = mover_archivo(archivo, ruta_salidas, categorias)
@@ -57,14 +60,47 @@ def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
                     estadisticas["duplicados"].append(nombre_original)
                 if categoria == "otros":
                     estadisticas["otros"].append(nombre_final)
-                linea = f"{datetime.now()} | {archivo} → {categoria} -> {nombre_final} \n"
+                ruta_destino = os.path.join(ruta_salidas, categoria, nombre_final)
+                linea = f"{datetime.now()} | {archivo} → {ruta_destino}\n"
                 print(linea.strip())
                 log.write(linea)
             except Exception as e:
                 estadisticas["errores"].append(f"{archivo}: {e}")
                 print(f"[ERROR] {archivo}: {e}")
+        log.write("=== FIN SESION ===\n")
     print("\n Listo.")
     mostrar_reporte(estadisticas)
+
+def deshacer():
+    with open(ruta_log, "r", encoding="utf-8") as log:
+        lineas = log.readlines()
+
+    fin = None
+    inicio = None
+    for i in range(len(lineas) - 1, -1, -1):
+        if lineas[i].strip() == "=== FIN SESION ===" and fin is None:
+            fin = i
+        elif "=== SESION" in lineas[i] and fin is not None:
+            inicio = i
+            break
+    
+    if inicio is None or fin is None:
+        print("No hay sesiones para deshacer.")
+        return
+    
+    # procesar líneas de la sesión
+    sesion = lineas[inicio+1:fin]
+    for linea in sesion:
+        partes = linea.split(" | ")
+        rutas = partes[1].split(" → ")
+        origen = rutas[0]
+        destino = rutas[1]
+        shutil.move(destino.strip(), origen.strip())
+        print(f"Restaurado: {destino.strip()} → {origen.strip()}")
+
+if modo_deshacer: 
+    deshacer()
+    sys.exit(0)
 
 if not archivos:
     print("No hay archivos en entradas.")
