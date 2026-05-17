@@ -2,6 +2,7 @@ from modulos.scanner import listar_archivos
 from modulos.organizador import mover_archivo, cargar_categorias
 from datetime import datetime
 import os
+import json
 import sys
 from modulos.organizador import obtener_categoria
 import shutil
@@ -26,9 +27,15 @@ try:
 except FileNotFoundError:
     print("Error: no se encontro config.json")
     sys.exit(1)
+
+except json.JSONDecodeError as e:
+    print(f"Error: config.json tiene sintaxis incorrecta — línea {e.lineno}: {e.msg}")
+    sys.exit(1)
+
 except Exception as e:
     print(f"Error al leer config.json: {e}")
     sys.exit(1)
+
 
 estadisticas = {
     "total": 0,
