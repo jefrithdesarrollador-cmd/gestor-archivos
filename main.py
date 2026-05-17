@@ -52,10 +52,14 @@ def mostrar_reporte(estadisticas):
         print("=========================")
 
 def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
+    total = len(archivos)
+    actual = 0
     with open(ruta_log, "a", encoding="utf-8") as log:
         log.write(f"=== SESION {datetime.now()} ===\n")
         for archivo in archivos:
             try:
+                actual += 1
+                print(f"\r[{actual}/{total}]", end="", flush=True)
                 nombre_final, categoria = mover_archivo(archivo, ruta_salidas, categorias)
                 estadisticas["total"] += 1
                 estadisticas["por_categoria"][categoria] = estadisticas["por_categoria"].get(categoria, 0) + 1
