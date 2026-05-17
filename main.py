@@ -16,7 +16,10 @@ modo_simulacion = "--simular" in sys.argv
 
 if len(sys.argv) > 1 and not sys.argv[1].startswith("--"):
     nombre_carpeta = sys.argv[1]
-    ruta_entradas = os.path.join(os.path.expanduser("~"), nombre_carpeta)
+    if os.path.isabs(nombre_carpeta):
+        ruta_entradas = nombre_carpeta
+    else:
+        ruta_entradas = os.path.join(os.path.expanduser("~"), nombre_carpeta)
     ruta_salidas = ruta_entradas
 else:
     ruta_entradas = "entradas"
