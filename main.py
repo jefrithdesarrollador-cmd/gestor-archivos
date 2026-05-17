@@ -13,8 +13,15 @@ init(autoreset=True)
 modo_quiet = "--quiet" in sys.argv
 modo_deshacer = "--deshacer" in sys.argv
 modo_simulacion = "--simular" in sys.argv
-ruta_entradas = "entradas"
-ruta_salidas = "salidas"
+
+if len(sys.argv) > 1 and not sys.argv[1].startswith("--"):
+    nombre_carpeta = sys.argv[1]
+    ruta_entradas = os.path.join(os.path.expanduser("~"), nombre_carpeta)
+    ruta_salidas = ruta_entradas
+else:
+    ruta_entradas = "entradas"
+    ruta_salidas = "salidas"
+
 ruta_log = "logs/registro.txt"
 min_mb = 0
 if "--min-mb" in sys.argv:
