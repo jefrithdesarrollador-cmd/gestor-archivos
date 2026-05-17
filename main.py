@@ -9,7 +9,7 @@ from colorama import init, Fore, Style
 init(autoreset=True)
 
 
-
+modo_quiet = "--quiet" in sys.argv
 modo_deshacer = "--deshacer" in sys.argv
 modo_simulacion = "--simular" in sys.argv
 ruta_entradas = "entradas"
@@ -55,7 +55,7 @@ def mostrar_reporte(estadisticas):
             print(f"  - {e}")
         print("=========================")
 
-def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
+def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas, modo_quiet):
     total = len(archivos)
     actual = 0
     with open(ruta_log, "a", encoding="utf-8") as log:
@@ -74,7 +74,8 @@ def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
                     estadisticas["otros"].append(nombre_final)
                 ruta_destino = os.path.join(ruta_salidas, categoria, nombre_final)
                 linea = f"{datetime.now()} | {archivo} → {ruta_destino}\n"
-                print(Fore.GREEN + linea.strip())
+                if modo_quiet == False:
+                    print(Fore.GREEN + linea.strip())
                 log.write(linea)
             except Exception as e:
                 estadisticas["errores"].append(f"{archivo}: {e}")
@@ -125,9 +126,9 @@ else:
             print(f" [simulacion] {archivo} --> {categoria} ")
         confirmacion = input("desea continuar?: si/no ").lower()
         if confirmacion == "si":
-            organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas)
+            organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas, modo_quiet)
 
         else:
             print("operacion canselada con exito")
     else: 
-        organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas)
+        organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas, modo_quiet)
