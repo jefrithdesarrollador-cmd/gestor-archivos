@@ -5,6 +5,10 @@ import os
 import sys
 from modulos.organizador import obtener_categoria
 import shutil
+from colorama import init, Fore, Style
+init(autoreset=True)
+
+
 
 modo_deshacer = "--deshacer" in sys.argv
 modo_simulacion = "--simular" in sys.argv
@@ -35,7 +39,7 @@ estadisticas = {
 }
 
 def mostrar_reporte(estadisticas):
-        print("\n===== REPORTE FINAL =====")
+        print(Fore.YELLOW + "\n===== REPORTE FINAL =====")
         print(f"Total archivos procesados: {estadisticas['total']}")
         print("\nPor categoría:")
         for cat, cantidad in estadisticas["por_categoria"].items():
@@ -70,11 +74,11 @@ def organizar(archivos, categorias, ruta_salidas, ruta_log, estadisticas):
                     estadisticas["otros"].append(nombre_final)
                 ruta_destino = os.path.join(ruta_salidas, categoria, nombre_final)
                 linea = f"{datetime.now()} | {archivo} → {ruta_destino}\n"
-                print(linea.strip())
+                print(Fore.GREEN + linea.strip())
                 log.write(linea)
             except Exception as e:
                 estadisticas["errores"].append(f"{archivo}: {e}")
-                print(f"[ERROR] {archivo}: {e}")
+                print(Fore.RED + f"[ERROR] {archivo}: {e}")
         log.write("=== FIN SESION ===\n")
     print("\n Listo.")
     mostrar_reporte(estadisticas)
